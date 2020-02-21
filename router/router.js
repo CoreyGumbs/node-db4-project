@@ -201,8 +201,33 @@ router.post('/:recipe_id/shopping-list', (req, res) => {
         res.status(200).json(list);
     })
     .catch(error => {
-        res.status(500).json({error: `There was an error retrieving ingredients list`});
+        res.status(500).json({error: `There was an error adding ingredients list`});
     });
 });
+
+router.put('/:recipe_id/shopping-list/:ingredient_id', (req, res) => {
+    
+    db('ingredients_list')
+    .update(req.body)
+    .where({ingredient_id: req.params.ingredient_id})
+    .then(list => {
+        res.status(200).json(list);
+    })
+    .catch(error => {
+        res.status(500).json({error: "There was a problem updating shopping list"});
+    });
+});
+
+router.delete('/:recipe_id/shopping-list/:ingredient_id', (req, res) => {
+    db('ingredients_list')
+    .where({ingredient_id: req.params.ingredient_id})
+    .del()
+    .then(list => {
+        res.status(200).json(list);
+    })
+    .catch(error => {
+        res.status(500).json({error: "There was a problem deleting shopping list"});
+    });
+})
 
 module.exports = router;
