@@ -120,34 +120,51 @@ router.delete('/:recipe_id/steps/:steps_id', (req, res) => {
     });
 });
 
-
-
 //Ingredients
-
-router.get('/ingredients', (req, res) => {
+router.get('/all/ingredients', (req, res) => {
     db('ingredients')
     .then(ingredients => {
-        console.log(ingredients);
         res.status(200).json(ingredients);
     })
     .catch(error => {
-        res.status(500).json({error: "There was an issue retrieving the ingredients"});
-    })
+        res.status(500).json({error: `There was an error retrieving ingredients`});
+    });
 })
 
-router.get('/ingredients/:id', (req, res) => {
+router.post('/ingredients', (req, res) => {
     db('ingredients')
-    .where({id: req.params.id})
-    .first()
-    .then(recipe => {
-        res.status(200).json(recipe);
+    .insert(req.body)
+    .then(ingredient => {
+        res.status(200).json(ingredient)
     })
     .catch(error => {
-        res.status(500).json({error: 'There was an error retrieving recipe'});
+        res.status(500).json({error: `There was an error adding ingredients`});
     });
 });
 
+router.put('/ingredients/:id', (req, res) => {
+    db('ingredients')
+    .update(req.body)
+    .where({id: req.params.id})
+    .then(ingredient => {
+        res.status(200).json(ingredient)
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error updating ingredients`});
+    });
+});
 
-
+router.delete('/ingredients/:id', (req, res) => {
+   
+    db('ingredients')
+    .where({id: req.params.id})
+    .del()
+    .then(ingredient => {
+        res.status(200).json(ingredient)
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error deleting ingredients`});
+    });
+});
 
 module.exports = router;
