@@ -57,9 +57,70 @@ router.delete('/:id', (req, res) => {
     .catch(error => {
         res.status(500).json({error: 'There was an error deleting recipe'});
     })
-})
+});
 
 //Recipe Steps
+router.get('/all/steps', (req, res) => {
+    db('recipe_steps')
+    .then(steps => {
+        console.log(steps)
+        res.status(200).json(steps);
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error all recipe's steps`});
+    });
+});
+
+router.get('/:recipe_id/steps', (req, res) => {
+    db('recipe_steps')
+    .join('recipe', 'recipe.id', 'recipe_steps.recipe_id')
+    .select('instruction', 'recipe.name')
+    .where({recipe_id: req.params.recipe_id})
+    .then(steps => {
+        res.status(200).json(steps);
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error finding this recipe's steps`});
+    });
+});
+
+router.post('/steps', (req, res) =>{
+    db('recipe_steps')
+    .insert(req.body)
+    .then(steps => {
+        res.status(200).json(steps);
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error adding this recipe's steps`});
+    });
+});
+
+router.put('/:recipe_id/steps/:steps_id', (req, res) =>{
+    console.log(req.params, req.body);
+    db('recipe_steps')
+    .update(req.body)
+    .where({id: req.params.steps_id})
+    .then(step => {
+        res.status(200).json(step)
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error updating this recipe's steps`});
+    });
+});
+
+router.delete('/:recipe_id/steps/:steps_id', (req, res) => {
+    db('recipe_steps')
+   .where({ id: req.params.steps_id })
+   .del()
+   .then(step => {
+        res.status(200).json(step)
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error deleting this recipe's steps`});
+    });
+});
+
+
 
 //Ingredients
 
