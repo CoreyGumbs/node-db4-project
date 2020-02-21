@@ -6,6 +6,10 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('measurements').insert([
         {
+          measurement_name: 'none',
+          measure_abbv: 'none'
+        },
+        {
           measurement_name: 'mililiter',
           measure_abbv: 'ml.'
         },
