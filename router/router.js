@@ -155,7 +155,6 @@ router.put('/ingredients/:id', (req, res) => {
 });
 
 router.delete('/ingredients/:id', (req, res) => {
-   
     db('ingredients')
     .where({id: req.params.id})
     .del()
@@ -164,6 +163,45 @@ router.delete('/ingredients/:id', (req, res) => {
     })
     .catch(error => {
         res.status(500).json({error: `There was an error deleting ingredients`});
+    });
+});
+
+
+//Shopping/Ingredients List
+router.get('/all/shopping-list', (req, res) => {
+    db('ingredients_list')
+    .then(list => {
+        res.status(200).json(list)
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error retrieving ingredients list`});
+    });
+});
+
+router.get('/:recipe_id/shopping-list', (req, res) => {
+   
+    db('ingredients_list as s')
+    .select('r.name as recipe_name', 'i.name as ingredients_name', 's.quantity as quantity', 'm.measure_abbv as measurement')
+    .innerJoin('recipe as r', 'r.id', '=', 's.recipe_id')
+    .innerJoin('ingredients as i', 'i.id', 's.ingredient_id')
+    .innerJoin('measurements as m', 'm.id', 's.measurements_id')
+    .where({recipe_id: req.params.recipe_id})
+    .then(list => {
+        res.status(200).json(list);
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error retrieving ingredients list`});
+    });
+});
+
+router.post('/:recipe_id/shopping-list', (req, res) => {
+    db('ingredients_list')
+    .insert(req.body)
+    .then(list => {
+        res.status(200).json(list);
+    })
+    .catch(error => {
+        res.status(500).json({error: `There was an error retrieving ingredients list`});
     });
 });
 
